@@ -19,7 +19,7 @@ guiAnyMessage = Label(console, text="")
 guiAnyMessage.grid(row=2, column=0, columnspan=4, sticky=W)
 
 # Initializing
-filename = '/Users/tauyoung/Documents/GitHub/FourierDraw/1.svg'
+filename = '/Users/tauyoung/Documents/GitHub/fourier/assets/peace.svg'
 numberOfEpicycloids = 128
 tol = 1e-3
 
