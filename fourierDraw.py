@@ -1,6 +1,4 @@
 from Tkinter import *
-import tkFileDialog
-import os
 
 # Building GUI
 console = Tk()
@@ -21,11 +19,7 @@ guiAnyMessage = Label(console, text="")
 guiAnyMessage.grid(row=2, column=0, columnspan=4, sticky=W)
 
 # Initializing
-<<<<<<< Updated upstream
 filename = '/Users/tauyoung/Documents/GitHub/fourier/assets/peace.svg'
-=======
-# filename = '/Users/tauyoung/Documents/GitHub/fourier/assets/peace.svg'
->>>>>>> Stashed changes
 numberOfEpicycloids = 128
 tol = 1e-3
 
@@ -37,7 +31,7 @@ if len(argv) >= 3:
 	numberOfEpicycloids = int(argv[2])
 if len(argv) >= 4:
 	tol = float(argv[3])
-# guiFileEntry.insert(0, filename)
+guiFileEntry.insert(0, filename)
 guiNumbEntry.insert(0, numberOfEpicycloids)
 guiTolEntry.insert(0, tol)
 
@@ -64,13 +58,6 @@ def process(filename, numberOfEpicycloids, tol):
 			for t in range(nsum):
 				csum += cmath.exp(-n * 2 * cmath.pi * 1j * t * tol) * points[t]
 			coeff[n] = csum * tol
-		
-		# Clearing tags for this path
-		try:
-			for i in range(-numberOfEpicycloids, numberOfEpicycloids + 1):
-				c.delete(arrows[i], epicys[i])
-		except:
-			"Skip"
 		
 		# Calculating coordinates
 		coord = [0] * (numberOfEpicycloids * 2 + 1)
@@ -102,6 +89,10 @@ def process(filename, numberOfEpicycloids, tol):
 				c.coords(epicys[i], coord[-i].real - abs(coeff[i]), coord[-i].imag - abs(coeff[i]), coord[-i].real + abs(coeff[i]), coord[-i].imag + abs(coeff[i]))
 			c.create_rectangle(int(coord[i].real), int(coord[i].imag), int(coord[i].real) + 1, int(coord[i].imag) + 1)
 			c.update()
+		
+		# Clearing tags for next path
+		for i in range(-numberOfEpicycloids, numberOfEpicycloids + 1):
+			c.delete(arrows[i], epicys[i])
 
 # Listening for changes
 from threading import Thread
@@ -109,7 +100,7 @@ threadChange = Thread(target=process)
 
 # Interface binded functions
 def fileSelector(nul):
-	guiFileEntry.insert(0, tkFileDialog.askopenfilename(initialdir=os.getcwd(), title="Select file", filetypes=(("Scalable Vector Graphics", "*.svg"),)))
+	filename = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=("Scalable Vector Graphics", "*.svg"))
 
 def checkAndRun(nul):
 	""" global filename
@@ -129,7 +120,7 @@ def checkAndRun(nul):
 	process(filename, numberOfEpicycloids, tol)
 
 # Binding Events
-guiFileEntry.bind('<FocusIn>', fileSelector)
+# guiFileEntry.bind('<FocusIn>', fileSelector)
 guiFileEntry.bind('<FocusOut>', checkAndRun)
 guiNumbEntry.bind('<FocusOut>', checkAndRun)
 guiTolEntry.bind('<FocusOut>', checkAndRun)
