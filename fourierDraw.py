@@ -5,27 +5,27 @@ import os
 # Building GUI
 console = Tk()
 console.title("FourierDraw - Console")
+console.filename=StringVar()
+console.strNumOfEpi=StringVar()
+console.strTol=StringVar()
 guiFileLabel = Label(console, text="SVG File Address:")
 guiFileLabel.grid(row=0, column=0, sticky=E)
-guiFileEntry = Entry(console)
+guiFileEntry = Entry(console, textvariable=console.filename)
 guiFileEntry.grid(row=0, column=1, columnspan=3, sticky=W)
+guiSelectButton=Button(console, text="Select File")
+guiSelectButton.grid(row=0,column=2,sticky=W)
 guiNumbLabel = Label(console, text="Pair of epicycloids:")
 guiNumbLabel.grid(row=1, column=0, sticky=E)
-guiNumbEntry = Entry(console)
+guiNumbEntry = Entry(console, textvariable=console.strNumOfEpi)
 guiNumbEntry.grid(row=1, column=1, sticky=W)
 guiTolLabel = Label(console, text="Tolerance:")
 guiTolLabel.grid(row=1, column=2, sticky=E)
-guiTolEntry = Entry(console)
+guiTolEntry = Entry(console, textvariabl=console.strTol)
 guiTolEntry.grid(row=1, column=3, sticky=W)
 guiAnyMessage = Label(console, text="")
 guiAnyMessage.grid(row=2, column=0, columnspan=4, sticky=W)
 
 # Initializing
-<<<<<<< Updated upstream
-filename = '/Users/tauyoung/Documents/GitHub/fourier/assets/peace.svg'
-=======
-# filename = '/Users/tauyoung/Documents/GitHub/fourier/assets/peace.svg'
->>>>>>> Stashed changes
 numberOfEpicycloids = 128
 tol = 1e-3
 
@@ -37,9 +37,8 @@ if len(argv) >= 3:
 	numberOfEpicycloids = int(argv[2])
 if len(argv) >= 4:
 	tol = float(argv[3])
-# guiFileEntry.insert(0, filename)
-guiNumbEntry.insert(0, numberOfEpicycloids)
-guiTolEntry.insert(0, tol)
+console.strNumOfEpi.set(str(numberOfEpicycloids))
+console.strTol.set(str(tol))
 
 # Processing anything
 def process(filename, numberOfEpicycloids, tol):
@@ -70,7 +69,7 @@ def process(filename, numberOfEpicycloids, tol):
 			for i in range(-numberOfEpicycloids, numberOfEpicycloids + 1):
 				c.delete(arrows[i], epicys[i])
 		except:
-			"Skip"
+			pass
 		
 		# Calculating coordinates
 		coord = [0] * (numberOfEpicycloids * 2 + 1)
@@ -109,30 +108,21 @@ threadChange = Thread(target=process)
 
 # Interface binded functions
 def fileSelector(nul):
-	guiFileEntry.insert(0, tkFileDialog.askopenfilename(initialdir=os.getcwd(), title="Select file", filetypes=(("Scalable Vector Graphics", "*.svg"),)))
+	console.filename.set(tkFileDialog.askopenfilename(initialdir=os.getcwd(), title="Select file", filetypes=(("Scalable Vector Graphics", "*.svg"),)))
 
 def checkAndRun(nul):
-	""" global filename
-	global numberOfEpicycloids
-	global tol
-	if (filename, numberOfEpicycloids, tol) == (guiFileEntry.get(), int(guiNumbEntry.get()), float(guiTolEntry.get())) and drawn:
-		return """
-	(filename, numberOfEpicycloids, tol) = (guiFileEntry.get(), int(guiNumbEntry.get()), float(guiTolEntry.get()))
+	(numberOfEpicycloids, tol) = (int(console.strNumOfEpi.get()), float(console.strTol.get()))
 	try:
-		filePointer = open(filename, 'r')
+		filePointer = open(console.filename.get(), 'r')
 		filePointer.close()
-		guiAnyMessage.config(text="Drawing " + filename + " with " + str(numberOfEpicycloids * 2) + " epicycloids...")
+		guiAnyMessage.config(text="Drawing " + console.filename.get() + " with " + str(numberOfEpicycloids * 2) + " epicycloids...")
 	except Exception as err:
-		# guiAnyMessage.config(text="Error: File not found " + filename)
 		guiAnyMessage.config(text=err)
 		return
-	process(filename, numberOfEpicycloids, tol)
+	process(console.filename.get(), numberOfEpicycloids, tol)
 
 # Binding Events
-guiFileEntry.bind('<FocusIn>', fileSelector)
-guiFileEntry.bind('<FocusOut>', checkAndRun)
-guiNumbEntry.bind('<FocusOut>', checkAndRun)
-guiTolEntry.bind('<FocusOut>', checkAndRun)
+guiSelectButton.bind('<Button-1>', fileSelector)
 console.bind_all('<Return>', checkAndRun)
 console.mainloop()
 
